@@ -38,10 +38,11 @@ php artisan key:generate
 
 ### Database
 Set up the database in the `.env` file: By default its set to `mysql`
+```bash
 DB_DATABASE=your_database_name
 DB_USERNAME=your_database_username
 DB_PASSWORD=your_database_password
-
+```
 ### Run Migration
 Run the database migrations:
 ```bash
