@@ -6,7 +6,8 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
-## Note App
+
+# Note App
 This is a simple note-taking application built with Laravel.
 
 ### Installation
@@ -28,7 +29,11 @@ composer install
 
 
 ### Generate a new application key:
+<pre>
+```bash
 php artisan key:generate
+```
+</pre>
 
 
 ### Database
@@ -39,11 +44,16 @@ DB_PASSWORD=your_database_password
 
 ### Run Migration
 Run the database migrations:
+```bash
 php artisan migrate
+```
+
 
 ### Server
 Start the local development server:
+```bash
 php artisan serve
+```
 Open your web browser and navigate to http://localhost:8000 to view the application.
 
 ### Usage
