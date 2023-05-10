@@ -18,22 +18,21 @@ git clone https://github.com/your-username/note-app.git
 
 Navigate to the project directory and install the dependencies using Composer:
 
-<pre>
+
 ```bash
 cd note-app
 composer install
 ```
-</pre>
+
 
 
 
 
 ### Generate a new application key:
-<pre>
 ```bash
 php artisan key:generate
 ```
-</pre>
+
 
 
 ### Database
