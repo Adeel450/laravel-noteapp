@@ -14,7 +14,7 @@ This is a simple note-taking application built with Laravel.
 Clone the repository to your local machine using the following command:
 
 
-git clone https://github.com/your-username/note-app.git
+git clone https://github.com/favourdev1/laravel-noteapp.git
 
 Navigate to the project directory and install the dependencies using Composer:
 
