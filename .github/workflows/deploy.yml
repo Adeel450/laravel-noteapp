@@ -1,49 +1,41 @@
-name: Laravel Deployment Workflow
+name: Deploy Laravel Application
 
-# Trigger workflow on every push to the main branch
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the code from the repository
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    # Step 2: Set up PHP environment
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.0' # Specify your PHP version here
-        extensions: mbstring, intl, pdo, mysql, bcmath, xml # Laravel dependencies
+        php-version: '8.0'  # Ensure this matches your PHP version
+        extensions: mbstring, bcmath
+        coverage: none
 
-    # Step 3: Install Composer
-    - name: Install Composer dependencies
+    - name: Install Composer
       run: |
-        composer update
+        curl -sS https://getcomposer.org/installer | php
+        php composer.phar install
 
-        composer install --no-interaction --prefer-dist --optimize-autoloader
-
-    # Step 4: Run tests (Optional - You can remove if you don't have tests)
-    - name: Run Laravel Tests
+    - name: Run Composer Update
       run: |
-        php artisan test
+        php composer.phar update
 
-    # Step 5: Deploy to AWS EC2 instance
-    - name: Deploy to EC2
+    - name: Deploy Application
       run: |
-        ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} ec2-user@107.20.113.54 
-          cd /var/www/your-laravel-project-directory
-          git pull origin main
-          composer install --no-interaction --prefer-dist --optimize-autoloader
-          php artisan migrate --force
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
-          sudo chown -R www-data:www-data /var/www/your-laravel-project-directory
-          sudo chmod -R 775 /var/www/your-laravel-project-directory/storage /var/www/your-laravel-project-directory/bootstrap/cache
-          
-      
+        # Your deployment commands, e.g., Laravel Artisan commands, deployment steps
+        php artisan migrate --force
+        php artisan config:cache
+        php artisan route:cache
+        php artisan view:cache
+ 
 
 
