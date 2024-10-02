@@ -21,6 +21,8 @@ jobs:
     # Step 3: Install Composer
     - name: Install Composer dependencies
       run: |
+        composer update
+
         composer install --no-interaction --prefer-dist --optimize-autoloader
 
     # Step 4: Run tests (Optional - You can remove if you don't have tests)
