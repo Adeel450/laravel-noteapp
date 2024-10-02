@@ -16,14 +16,14 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'  # Ensure this matches your PHP version
+          php-version: '8.1'  # Ensure this matches your PHP version
           extensions: mbstring, bcmath
           coverage: none
 
       - name: Install Composer
         run: |
           curl -sS https://getcomposer.org/installer | php
-          php composer.phar install --no-scripts --no-progress --prefer-dist
+          php composer.phar install 
 
       - name: Run Composer Update
         run: |
