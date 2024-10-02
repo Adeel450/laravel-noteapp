@@ -1,45 +1,47 @@
-name: Deploy Laravel Application to EC2
+name: Laravel Deployment Workflow
 
-# Trigger the workflow on push to the main branch
-on:
-  push:
-    branches:
-      - main  # Adjust if your default branch is different
+# Trigger workflow on every push to the main branch
+on: [push]
 
 jobs:
   deploy:
-    name: Deploy to AWS EC2
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
-      - name: Checkout code
-        uses: actions/checkout@v2
+    # Step 1: Checkout the code from the repository
+    - uses: actions/checkout@v3
 
-      # Step 2: Set up SSH to connect to EC2
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}  # Uses the private SSH key added as a secret
+    # Step 2: Set up PHP environment
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0' # Specify your PHP version here
+        extensions: mbstring, intl, pdo, mysql, bcmath, xml # Laravel dependencies
 
-      # Step 3: Deploy the code to the EC2 instance
-      - name: Deploy to EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@107.20.113.54 << 'EOF'
-            # Navigate to your Laravel application directory on the EC2 instance
-            cd /var/www/laravel-noteapp  # Change to the directory where your app is located
-            
-            # Pull the latest changes from the main branch
-            git pull origin main
-            
-            # Install/update Composer dependencies
-            composer install --no-dev --optimize-autoloader
-            
-            # Run database migrations
-            php artisan migrate --force
-            
-           # Clear and cache the Laravel config, routes, and views
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-       EOF
+    # Step 3: Install Composer
+    - name: Install Composer dependencies
+      run: |
+        composer install --no-interaction --prefer-dist --optimize-autoloader
+
+    # Step 4: Run tests (Optional - You can remove if you don't have tests)
+    - name: Run Laravel Tests
+      run: |
+        php artisan test
+
+    # Step 5: Deploy to AWS EC2 instance
+    - name: Deploy to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} ec2-user@107.20.113.54 
+          cd /var/www/your-laravel-project-directory
+          git pull origin main
+          composer install --no-interaction --prefer-dist --optimize-autoloader
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          sudo chown -R www-data:www-data /var/www/your-laravel-project-directory
+          sudo chmod -R 775 /var/www/your-laravel-project-directory/storage /var/www/your-laravel-project-directory/bootstrap/cache
+          
+      
+
+
