@@ -1,0 +1,45 @@
+name: Deploy Laravel Application to EC2
+
+# Trigger the workflow on push to the main branch
+on:
+  push:
+    branches:
+      - main  # Adjust if your default branch is different
+
+jobs:
+  deploy:
+    name: Deploy to AWS EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up SSH to connect to EC2
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}  # Uses the private SSH key added as a secret
+
+      # Step 3: Deploy the code to the EC2 instance
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@107.20.113.54 << 'EOF'
+            # Navigate to your Laravel application directory on the EC2 instance
+            cd /var/www/laravel-noteapp  # Change to the directory where your app is located
+            
+            # Pull the latest changes from the main branch
+            git pull origin main
+            
+            # Install/update Composer dependencies
+            composer install --no-dev --optimize-autoloader
+            
+            # Run database migrations
+            php artisan migrate --force
+            
+           # Clear and cache the Laravel config, routes, and views
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+       EOF
